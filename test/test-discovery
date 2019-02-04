@@ -11,7 +11,7 @@ except ImportError:
   import gobject as GObject
 import bluezutils
 
-compact = False
+compact = True
 devices = {}
 
 def print_compact(address, properties):
@@ -65,9 +65,10 @@ def interfaces_added(path, interfaces):
 	if not properties:
 		return
 
+        print("@@@")
 	if path in devices:
 		dev = devices[path]
-
+		
 		if compact and skip_dev(dev, properties):
 			return
 		devices[path] = dict(devices[path].items() + properties.items())
@@ -90,12 +91,16 @@ def properties_changed(interface, changed, invalidated, path):
 
 	if path in devices:
 		dev = devices[path]
-
-		if compact and skip_dev(dev, changed):
-			return
-		devices[path] = dict(devices[path].items() + changed.items())
+		
+		if path=='/org/bluez/hci0/dev_18_31_BF_8B_9C_7D' or path=='/org/bluez/hci0/dev_68_EF_43_5F_0D_57':
+                    print("*****")
+		
+                    if compact and skip_dev(dev, changed):
+                        return
+                    devices[path] = dict(devices[path].items() + changed.items())
 	else:
-		devices[path] = changed
+                if path=='/org/bluez/hci0/dev_18_31_BF_8B_9C_7D' or path=='/org/bluez/hci0/dev_68_EF_43_5F_0D_57':
+                    devices[path] = changed
 
 	if "Address" in devices[path]:
 		address = devices[path]["Address"]
